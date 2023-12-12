@@ -140,7 +140,7 @@ function resizeFont(container, text, minFontSize, maxFontSize, wordWrap) {
 
   if (text.scrollHeight >= container.offsetHeight && wordWrap) {
     console.log("Reducing font size!");
-    makeFontSizeSmaller(container, text, minFontSize);
+    makeFontSizeSmaller(container, text, minFontSize, wordWrap);
     return;
   } 
   
