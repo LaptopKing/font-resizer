@@ -33,7 +33,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, wordWrap = fals
       text.style = '';
 
       if (wordWrap) {
-        text.style['word-wrap'] = 'break-word';
+        text.style['word-wrap'] = 'normal';
       } else {
         text.style['white-space'] = 'nowrap';
       }
