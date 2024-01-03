@@ -14,7 +14,7 @@
   *
   * @return void
   */
-function resizer(selector, { minFontSize = 12, maxFontSize = 96, wordWrap = false, resizer = true, timeout = 100, resize = 1} = {}) {
+function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1} = {}) {
   addEventListener("DOMContentLoaded", (event) => {
     setTimeout(function () {
       if ((typeof resizer === "boolean" ? resizer != true : resizer != 'true') || !resizer) {
@@ -39,7 +39,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, wordWrap = fals
       }
 
       for (let i = 0; i < resize; i++) {
-        resizeToFit(container, text, minFontSize, maxFontSize, wordWrap);
+        resizeToFit(container, text, minFontSize, maxFontSize, wordWrap, checkWidth, checkHeight);
       }
 
       var container = document.querySelectorAll(selector)[0];
@@ -71,13 +71,25 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, wordWrap = fals
   *
   * @return void
   */
-function resizeToFit(container, text, minFontSize, maxFontSize, wordWrap) {
+function resizeToFit(container, text, minFontSize, maxFontSize, wordWrap, checkWidth, checkHeight) {
   if (text.offsetHeight == 0 || container.offsetHeight == 0) {
     console.log("Nothing to resize!");
     return;
   }
 
   resizeFont(container, text, minFontSize, maxFontSize, wordWrap);
+
+  if (checkWidth && !checkHeight) {
+    resizeToWidth(container, text, minFontSize, maxFontSize);
+  }
+
+  if (checkHeight && !checkWidth) {
+    resizeToHeight(container, text, minFontSize, maxFontSize);
+  }
+
+  if (checkWidth && checkHeight) {
+    resizeToContainer(container, text, minFontSize, maxFontSize);
+  }
 }
 
 /**
@@ -122,13 +134,13 @@ function resizeFont(container, text, minFontSize, maxFontSize, wordWrap) {
 
   if (fontSize < minFontSize) {
     console.log("Increasing font size because it is smaller than min font size!");
-    makeFontSizeSmaller(container, text, minFontSize, wordWrap);
+    makeFontSizeBigger(container, text, minFontSize, wordWrap);
     return;
   }
   
   if (fontSize > maxFontSize) {
     console.log("Reducing font size because it is bigger than max font size!");
-    makeFontSizeBigger(container, text, maxFontSize, wordWrap);
+    makeFontSizeSmaller(container, text, maxFontSize, wordWrap);
     return;
   }
 
@@ -158,6 +170,126 @@ function resizeFont(container, text, minFontSize, maxFontSize, wordWrap) {
 }
 
 /**
+  * decides how and when to decrease or increase the size of the font
+  * by checking the width of container and text and if the text font size
+  * reached either the minimum font size or the maximum font size
+  *
+  * @param {object} container HTML DOM element that contains the text
+  * @param {object} text HTML DOM element that is the text in the container
+  * @param {integer} minFontSize Minimum font size
+  * @param {integer} maxFontSize Maximum font size
+  *
+  * @return void
+  */
+function resizeToWidth(container, text, minFontSize, maxFontSize) {
+  var fontSize = window.getComputedStyle(text).fontSize;
+
+  if (fontSize < minFontSize) {
+    console.log("Increasing font size because it is smaller than min font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+  
+  if (fontSize > maxFontSize) {
+    console.log("Reducing font size because it is bigger than max font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+  
+  if (text.scrollWidth < container.offsetWidth) {
+    console.log("Increasing font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+
+  if (text.scrollWidth >= container.offsetWidth) {
+    console.log("Reducing font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+}
+
+/**
+  * decides how and when to decrease or increase the size of the font
+  * by checking the height of container and text and if the text font size
+  * reached either the minimum font size or the maximum font size
+  *
+  * @param {object} container HTML DOM element that contains the text
+  * @param {object} text HTML DOM element that is the text in the container
+  * @param {integer} minFontSize Minimum font size
+  * @param {integer} maxFontSize Maximum font size
+  *
+  * @return void
+  */
+function resizeToHeight(container, text, minFontSize, maxFontSize) {
+  var fontSize = window.getComputedStyle(text).fontSize;
+
+  if (fontSize < minFontSize) {
+    console.log("Increasing font size because it is smaller than min font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+  
+  if (fontSize > maxFontSize) {
+    console.log("Reducing font size because it is bigger than max font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+  
+  if (text.scrollHeight < container.offsetHeight) {
+    console.log("Increasing font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+
+  if (text.scrollHeight >= container.offsetHeight) {
+    console.log("Reducing font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+}
+
+/**
+  * decides how and when to decrease or increase the size of the font
+  * by checking the height and width of container and text and if the text font size
+  * reached either the minimum font size or the maximum font size
+  *
+  * @param {object} container HTML DOM element that contains the text
+  * @param {object} text HTML DOM element that is the text in the container
+  * @param {integer} minFontSize Minimum font size
+  * @param {integer} maxFontSize Maximum font size
+  *
+  * @return void
+  */
+function resizeToContainer(container, text, minFontSize, maxFontSize) {
+  var fontSize = window.getComputedStyle(text).fontSize;
+
+  if (fontSize < minFontSize) {
+    console.log("Increasing font size because it is smaller than min font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+  
+  if (fontSize > maxFontSize) {
+    console.log("Reducing font size because it is bigger than max font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+  
+  if (text.scrollHeight < container.offsetHeight && text.scrollWidth < container.offsetWidth) {
+    console.log("Increasing font size!");
+    makeFontSizeBigger(container, text, minFontSize);
+    return;
+  }
+
+  if (text.scrollHeight >= container.offsetHeight && text.scrollWidth >= container.offsetWidth) {
+    console.log("Reducing font size!");
+    makeFontSizeSmaller(container, text, minFontSize);
+    return;
+  }
+}
+
+/**
   * increases font size as long as it doesn't reach
   * the maximum font size or the edge of the container
   * or the height of the container depending on the word wrap
@@ -165,28 +297,37 @@ function resizeFont(container, text, minFontSize, maxFontSize, wordWrap) {
   * @param {object} container HTML DOM element that contains the text
   * @param {object} text HTML DOM element that is the text in the container
   * @param {integer} maxFontSize Maximum font size
-  * @param {boolean} wordWrap Should word wrap be used
+  * @param {integer} mode 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height)
   *
   * @return void
   */
-function makeFontSizeBigger(container, text, maxFontSize, wordWrap) {
+function makeFontSizeBigger(container, text, maxFontSize, mode = 2) {
   var fontSize = window.getComputedStyle(text).fontSize;
 
-  console.log("Increase font size:", fontSize, text.scrollHeight, text.scrollWidth, wordWrap);
+  console.log("Increase font size:", fontSize, text.scrollHeight, text.scrollWidth, mode);
 
   if (parseFloat(fontSize) >= maxFontSize) {
     console.log("Reached max font size", maxFontSize);
     return;
   }
 
-  if (text.scrollHeight < container.offsetHeight && wordWrap) {
+  // no word wrap, check only width
+  if (text.scrollWidth < container.offsetWidth && mode == 0) {
     increaseFontSize(text, fontSize);
-    makeFontSizeBigger(container, text, maxFontSize, wordWrap);
+    makeFontSizeBigger(container, text, maxFontSize, mode);
   }
 
-  if (text.scrollWidth < container.offsetWidth && !wordWrap) {
+  // word wrap, check only height
+  if (text.scrollHeight < container.offsetHeight && mode == 1) {
     increaseFontSize(text, fontSize);
-    makeFontSizeBigger(container, text, maxFontSize, wordWrap);
+    makeFontSizeBigger(container, text, maxFontSize, mode);
+    return;
+  }
+
+  // check boundries of container, check width and height
+  if (text.scrollWidth < container.offsetWidth && text.scrollHeight < container.offsetHeight && mode == 2) {
+    increaseFontSize(text, fontSize);
+    makeFontSizeBigger(container, text, maxFontSize, mode);
   }
 }
 
@@ -198,27 +339,33 @@ function makeFontSizeBigger(container, text, maxFontSize, wordWrap) {
   * @param {object} container HTML DOM element that contains the text
   * @param {object} text HTML DOM element that is the text in the container
   * @param {integer} minFontSize Minimum font size
-  * @param {boolean} wordWrap Should word wrap be used
+  * @param {integer} mode 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height)
   *
   * @return void
   */
-function makeFontSizeSmaller(container, text, minFontSize, wordWrap) {
+function makeFontSizeSmaller(container, text, minFontSize, mode) {
   var fontSize = window.getComputedStyle(text).fontSize;
 
-  console.log("Decreasing font size:", fontSize, text.scrollHeight, text.scrollWidth, wordWrap);
+  console.log("Decreasing font size:", fontSize, text.scrollHeight, text.scrollWidth, mode);
 
   if (parseFloat(fontSize) <= minFontSize) {
     console.log("Reached min font size", minFontSize);
     return;
   }
 
-  if (text.scrollHeight >= container.offsetHeight && wordWrap) {
+  if (text.scrollWidth >= container.offsetWidth && mode == 0) {
     decreaseFontSize(text, fontSize);
-    makeFontSizeSmaller(container, text, minFontSize, wordWrap);
+    makeFontSizeSmaller(container, text, minFontSize, mode);
   }
 
-  if (text.scrollWidth >= container.offsetWidth && !wordWrap) {
+  if (text.scrollHeight >= container.offsetHeight && mode == 1) {
     decreaseFontSize(text, fontSize);
-    makeFontSizeSmaller(container, text, minFontSize, wordWrap);
+    makeFontSizeSmaller(container, text, minFontSize, mode);
+  }
+
+  // check boundries of container, check width and height
+  if (text.scrollWidth >= container.offsetWidth || text.scrollHeight >= container.offsetHeight && mode == 2) {
+    decreaseFontSize(text, fontSize);
+    makeFontSizeSmaller(container, text, minFontSize, mode);
   }
 }

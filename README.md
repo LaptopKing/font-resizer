@@ -9,8 +9,14 @@
 // call resizer with some options and get container element by class
 resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: false});
 
+// call resizer to resize without wordWrap and resize font to container height
+resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: false, checkHeight: true});
+
+// call resizer to resize with wordWrap and resize font to container width
+resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: true, checkWidth: true});
+
 // call resizer with all options and get container element by id
-resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: false, resizer: true, timeout: 150, resize: 1});
+resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, checkWidth = false, checkHeight = false, wordWrap: false, resizer: true, timeout: 150, resize: 1});
 ```
 
 ## Functions
@@ -31,9 +37,15 @@ to the size of the container
 | minFontSize | integer | Minimum font size the text can have | (int) 12
 | maxFontSize | integer | Maximum font size the text can have | (int) 96
 | wordWrap | boolean | Should word wrap be used or not | (boolean) false
+| checkWidth | boolean | Make sure to resize font to container width | (boolean) false
+| checkHeight | boolean | Make sure to resize font to container height | (boolean) false
 | resizer | boolean | Should the resizer run or just exit | (boolean) true
 | timeout | integer | How much to delay before starting resizer | (int) 100
 | resize | integer | How many times should the resizer run | (int) 1
+
+### wordWrap Option
+If set to true it adds wordWrap style and resize font with checking only container height
+If set to false it removes any wordWrap style and resize font with checking only container width
 
 ## resizeToFit(container, text, minFontSize, maxFontSize, wordWrap) ⇒
 decides if the resizing process
