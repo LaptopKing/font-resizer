@@ -16,7 +16,7 @@ resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: false, che
 resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: true, checkWidth: true});
 
 // call resizer with all options and get container element by id
-resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, checkWidth = false, checkHeight = false, wordWrap: false, resizer: true, timeout: 150, resize: 1});
+resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, checkWidth: false, checkHeight: false, wordWrap: false, resizer: true, timeout: 150, resize: 1});
 ```
 
 ## Functions
