@@ -340,7 +340,6 @@ class Resizer {
 
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
-    console.log("Increase font size:", this.fontSize, this.text.scrollHeight, this.text.scrollWidth, mode);
 
     if (parseFloat(this.fontSize) >= this.maxFontSize) {
       console.log("Reached max font size", this.maxFontSize);
@@ -349,6 +348,7 @@ class Resizer {
 
     // no word wrap, check only width
     if (this.text.scrollWidth < this.container.offsetWidth && mode == 0) {
+      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -356,6 +356,7 @@ class Resizer {
 
     // word wrap, check only height
     if (this.text.scrollHeight < this.container.offsetHeight && mode == 1) {
+      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -363,6 +364,7 @@ class Resizer {
 
     // check boundries of container, check width and height
     if (this.text.scrollWidth < this.container.offsetWidth && this.text.scrollHeight < this.container.offsetHeight && mode == 2) {
+      console.log("Increasing font size because of width and height:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, "|", this.text.scrollHeight, this.container.offsetHeight, mode);
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -386,20 +388,20 @@ class Resizer {
 
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
-    console.log("Decreasing font size:", this.fontSize, this.text.scrollHeight, this.text.scrollWidth, mode);
-
     if (parseFloat(this.fontSize) <= this.minFontSize) {
       console.log("Reached min font size", this.minFontSize);
       return;
     }
 
     if (this.text.scrollWidth >= this.container.offsetWidth && mode == 0) {
+      console.log("Decreasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;
     }
 
     if (this.text.scrollHeight >= this.container.offsetHeight && mode == 1) {
+      console.log("Decreasing font size because of height:", this.fontSize, this.text.scrollHeight, this.container.offsetHeight, mode);
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;
@@ -407,6 +409,7 @@ class Resizer {
 
     // check boundries of container, check width and height
     if (this.text.scrollWidth >= this.container.offsetWidth || this.text.scrollHeight >= this.container.offsetHeight && mode == 2) {
+      console.log("Decreasing font size because of width and height:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, "|", this.text.scrollHeight, this.container.offsetHeight, mode);
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;
