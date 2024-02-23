@@ -41,7 +41,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
 
       for (let i = 0; i < resize; i++) {
 
-        const resizerInstance = new Resizer();
+        var resizerInstance = new Resizer();
         resizerInstance.container = container;
         resizerInstance.text = text;
         resizerInstance.minFontSize = minFontSize;
