@@ -15,59 +15,78 @@
   *
   * @returns {void}
   */
+
 function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1, maxProbs = 300 } = {}) {
-  addEventListener("DOMContentLoaded", (event) => {
-    setTimeout(function() {
-      if ((typeof resizer === "boolean" ? resizer != true : resizer != 'true') || !resizer) {
+  try {
+
+    document.addEventListener("readystatechange", (event) => {
+
+      var container = document.querySelectorAll(selector)[0];
+
+      if (document.readyState !== 'complete' && !container) {
+        console.log("Page is not loaded yet");
         return;
       }
-      var container = document.querySelectorAll(selector)[0];
-      var text = container.firstElementChild;
 
-      console.log("Start of script");
-      console.log("Before resize Container height:", container.offsetHeight);
-      console.log("Before resize Text height:", text.scrollHeight);
-      console.log("Before resize Container width:", container.offsetWidth);
-      console.log("Before resize Text width:", text.scrollWidth);
-      console.log(text);
+      setTimeout(function() {
+        if ((typeof resizer === "boolean" ? resizer != true : resizer != 'true') || !resizer) {
+          return;
+        }
 
-      text.style = '';
+        var container = document.querySelectorAll(selector)[0];
+        var text = container.firstElementChild;
 
-      if (wordWrap) {
-        text.style['word-wrap'] = 'normal';
-      } else {
-        text.style['white-space'] = 'nowrap';
-      }
+        console.log("Start of script");
+        console.log("Before resize Container height:", container.offsetHeight);
+        console.log("Before resize Text height:", text.scrollHeight);
+        console.log("Before resize Container width:", container.offsetWidth);
+        console.log("Before resize Text width:", text.scrollWidth);
+        console.log(container);
+        console.log(text);
 
-      for (let i = 0; i < resize; i++) {
+        text.style = '';
 
-        var resizerInstance = new Resizer();
-        resizerInstance.container = container;
-        resizerInstance.text = text;
-        resizerInstance.minFontSize = minFontSize;
-        resizerInstance.maxFontSize = maxFontSize;
-        resizerInstance.wordWrap = wordWrap;
-        resizerInstance.checkWidth = checkWidth;
-        resizerInstance.checkHeight = checkHeight;
-        resizerInstance.maxProbs = maxProbs;
+        if (wordWrap) {
+          text.style['word-wrap'] = 'normal';
+        } else {
+          text.style['white-space'] = 'nowrap';
+        }
 
-        resizerInstance.resizeToFit();
-      }
+        for (var i = 0; i < resize; i++) {
 
-      var container = document.querySelectorAll(selector)[0];
-      var text = container.firstElementChild;
-      var fontSize = window.getComputedStyle(text).fontSize;
+          console.log("Running resizer");
+          var resizerInstance = new Resizer();
+          resizerInstance.container = container;
+          resizerInstance.text = text;
+          resizerInstance.minFontSize = minFontSize;
+          resizerInstance.maxFontSize = maxFontSize;
+          resizerInstance.wordWrap = wordWrap;
+          resizerInstance.checkWidth = checkWidth;
+          resizerInstance.checkHeight = checkHeight;
+          resizerInstance.maxProbs = maxProbs;
 
-      console.log(fontSize);
-      console.log("After resize Container height:", container.scrollHeight);
-      console.log("After resize Text height:", text.offsetHeight);
-      console.log("After resize Container width:", container.offsetWidth);
-      console.log("After resize Text width:", text.scrollWidth);
-      console.log(text);
-      console.log("End of script");
-      console.log();
-    }, timeout);
-  });
+          resizerInstance.resizeToFit();
+        }
+
+        var container = document.querySelectorAll(selector)[0];
+        var text = container.firstElementChild;
+        var fontSize = window.getComputedStyle(text).fontSize;
+
+        console.log(fontSize);
+        console.log("After resize Container height:", container.scrollHeight);
+        console.log("After resize Text height:", text.offsetHeight);
+        console.log("After resize Container width:", container.offsetWidth);
+        console.log("After resize Text width:", text.scrollWidth);
+        console.log(container);
+        console.log(text);
+        console.log("End of script");
+        console.log();
+      }, timeout);
+    });
+
+  } catch (error) {
+    console.log("Error in font resizer:", error);
+  }
 }
 
 /**
@@ -85,7 +104,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
  * @param {integer} fontSize Current font size of the text
  *
  */
-class Resizer {
+var Resizer = class {
   container;
 
   text;
@@ -328,7 +347,7 @@ class Resizer {
     * the maximum font size or the edge of the container
     * or the height of the container depending on the word wrap
     *
-    * @param {integer} mode 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height)
+    * @param {integer} mode 0 = no word wrap (width), 1 = word wrap (height), 2 = check container boundries (width, height)
     *
     * @returns {void}
     */
@@ -356,7 +375,7 @@ class Resizer {
 
     // word wrap, check only height
     if (this.text.scrollHeight < this.container.offsetHeight && mode == 1) {
-      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
+      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollHeight, this.container.offsetHeight, mode);
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -376,7 +395,7 @@ class Resizer {
     * the minimum font size or the edge of the container
     * or the height of the container depending on the word wrap
     *
-    * @param {integer} mode 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height)
+    * @param {integer} mode 0 = no word wrap (width), 1 = word wrap (height), 2 = check container boundries (width, height)
     *
     * @returns {void}
     */
