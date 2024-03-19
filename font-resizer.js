@@ -40,12 +40,20 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         var container = document.querySelectorAll(selector)[0];
         var text = container.firstElementChild;
 
-        if (!container || container == "" || !text || text == "") {
+        if (!container || container.innerText == "" || !text || text.innerText == "") {
           return;
         }
 
         debugTable.push({
           message: "Start of script",
+          function: "resizer"
+        });
+        debugTable.push({
+          message: container,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: text,
           function: "resizer"
         });
         debugTable.push({
@@ -64,14 +72,6 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
           message: `Before resize Text width: ${text.scrollWidth}`,
           function: "resizer"
         });
-        debugTable.push({
-          message: container,
-          function: "resizer"
-        });
-        debugTable.push({
-          message: text,
-          function: "resizer"
-        });
 
         text.style = '';
 
@@ -83,7 +83,10 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
 
         for (var i = 0; i < resize; i++) {
 
-          console.log("Running resizer");
+          debugTable.push({
+            message: "Running resizer",
+            function: "resizer"
+          });
           var resizerInstance = new Resizer();
           resizerInstance.container = container;
           resizerInstance.text = text;
@@ -497,7 +500,6 @@ var Resizer = class {
         message: `Increasing font size because of width [fontSize|textWidth|containerWidth|mode]: ${this.fontSize} | ${this.text.scrollWidth} | ${this.container.offsetWidth} | ${mode}`,
         function: "makeFontSizeBigger"
       });
-      console.log();
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
