@@ -1,3 +1,6 @@
+// storing debug log information
+var debugTable = [];
+
 /**
   * resizes container's text's font according
   * to the size of the container
@@ -19,7 +22,6 @@
 
 function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1, maxProbs = 300, debug = false } = {}) {
   try {
-    var debugTable = [];
 
     document.addEventListener("readystatechange", (event) => {
 
@@ -38,7 +40,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         var container = document.querySelectorAll(selector)[0];
         var text = container.firstElementChild;
 
-        if (!container || !container == "" || !text || text == "") {
+        if (!container || container == "" || !text || text == "") {
           return;
         }
 
