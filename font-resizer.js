@@ -144,6 +144,8 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         if (debug) {
           console.table(debugTable);
         }
+        
+        debugTable = [];
       }, timeout);
     });
 
