@@ -2,7 +2,7 @@
   * resizes container's text's font according
   * to the size of the container
   *
-  * @param {string} selector Used to retrieve element from document
+  * @param {string} selector - Used to retrieve element from document
   * @param {object} options {
   *   {integer} minFontSize Minimum font size the text can have
   *   {integer} maxFontSize Maximum font size the text can have
@@ -11,13 +11,15 @@
   *   {integer} timeout How much to delay before starting resizer
   *   {integer} resize How many times should the resizer run
   *   {integer} maxProbs The amount of times it can resize a text
-  * } Custom options of the resizer
+  *   {boolean} debug If set debug mode to true, write logs to console
+  * } - Custom options of the resizer
   *
   * @returns {void}
   */
 
-function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1, maxProbs = 300 } = {}) {
+function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1, maxProbs = 300, debug = false } = {}) {
   try {
+    var debugTable = [];
 
     document.addEventListener("readystatechange", (event) => {
 
@@ -36,13 +38,38 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         var container = document.querySelectorAll(selector)[0];
         var text = container.firstElementChild;
 
-        console.log("Start of script");
-        console.log("Before resize Container height:", container.offsetHeight);
-        console.log("Before resize Text height:", text.scrollHeight);
-        console.log("Before resize Container width:", container.offsetWidth);
-        console.log("Before resize Text width:", text.scrollWidth);
-        console.log(container);
-        console.log(text);
+        if (!container || !container == "" || !text || text == "") {
+          return;
+        }
+
+        debugTable.push({
+          message: "Start of script",
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `Before resize Container height: ${container.offsetHeight}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `Before resize Text height: ${text.scrollHeight}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `Before resize Container width: ${container.offsetWidth}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `Before resize Text width: ${text.scrollWidth}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: container,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: text,
+          function: "resizer"
+        });
 
         text.style = '';
 
@@ -72,20 +99,51 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         var text = container.firstElementChild;
         var fontSize = window.getComputedStyle(text).fontSize;
 
-        console.log(fontSize);
-        console.log("After resize Container height:", container.scrollHeight);
-        console.log("After resize Text height:", text.offsetHeight);
-        console.log("After resize Container width:", container.offsetWidth);
-        console.log("After resize Text width:", text.scrollWidth);
-        console.log(container);
-        console.log(text);
-        console.log("End of script");
-        console.log();
+        debugTable.push({
+          message: `Final font size: ${fontSize}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `After resize Container height: ${container.scrollHeight}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `After resize Text height: ${text.offsetHeight}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `After resize Text height: ${text.offsetHeight}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `After resize Container width: ${container.offsetWidth}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: `After resize Text width: ${text.scrollWidth}`,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: container,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: text,
+          function: "resizer"
+        });
+        debugTable.push({
+          message: "End of script",
+          function: "resizer"
+        });
+
+        if (debug) {
+          console.table(debugTable);
+        }
       }, timeout);
     });
 
   } catch (error) {
-    console.log("Error in font resizer:", error);
+    console.error("Error in font resizer:", error);
   }
 }
 
@@ -146,14 +204,20 @@ var Resizer = class {
     */
   resizeToFit() {
     if (this.text.offsetHeight == 0 || this.container.offsetHeight == 0) {
-      console.log("Nothing to resize!");
+      debugTable.push({
+        message: "Nothing to resize",
+        function: "resizeToFit"
+      });
       return;
     }
 
     this.resizeFont();
 
     if (this.probs >= this.maxProbs) {
-      console.log("Reached max probation number!");
+      debugTable.push({
+        message: "Reached maximum probation number",
+        function: "resizeToFit"
+      });
       return;
     }
 
@@ -201,37 +265,55 @@ var Resizer = class {
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
     if (this.fontSize < this.minFontSize) {
-      console.log("Increasing font size because it is smaller than min font size!");
+      debugTable.push({
+        message: "Increasing font size because it is smaller than min font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeBigger();
       return;
     }
 
     if (this.fontSize > this.maxFontSize) {
-      console.log("Reducing font size because it is bigger than max font size!");
+      debugTable.push({
+        message: "Reducing font size because it is bigger than max font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeSmaller();
       return;
     }
 
     if (this.text.scrollHeight < this.container.offsetHeight && this.wordWrap) {
-      console.log("Increasing font size!");
+      debugTable.push({
+        message: "Increasing font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeBigger();
       return;
     }
 
     if (this.text.scrollHeight >= this.container.offsetHeight && this.wordWrap) {
-      console.log("Reducing font size!");
+      debugTable.push({
+        message: "Reducing font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeSmaller();
       return;
     }
 
     if (this.text.scrollWidth < this.container.offsetWidth && !this.wordWrap) {
-      console.log("Increasing font size!");
+      debugTable.push({
+        message: "Increasing font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeBigger();
       return;
     }
 
     if (this.text.scrollWidth >= this.container.offsetWidth && !this.wordWrap) {
-      console.log("Reducing font size!");
+      debugTable.push({
+        message: "Reducing font size!",
+        function: "resizeFont"
+      });
       this.makeFontSizeSmaller();
       return;
     }
@@ -248,25 +330,37 @@ var Resizer = class {
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
     if (this.fontSize < this.minFontSize) {
-      console.log("Increasing font size because it is smaller than min font size!");
+      debugTable.push({
+        message: "Increasing font size because it is smaller than min font size!",
+        function: "resizeToWidth"
+      });
       this.makeFontSizeBigger(1);
       return;
     }
 
     if (this.fontSize > this.maxFontSize) {
-      console.log("Reducing font size because it is bigger than max font size!");
+      debugTable.push({
+        message: "Reducing font size because it is bigger than max font size!",
+        function: "resizeToWidth"
+      });
       this.makeFontSizeSmaller(1);
       return;
     }
 
     if (this.text.scrollWidth < this.container.offsetWidth) {
-      console.log("Increasing font size!");
+      debugTable.push({
+        message: "Increasing font size!",
+        function: "resizeToWidth"
+      });
       this.makeFontSizeBigger(1);
       return;
     }
 
     if (this.text.scrollWidth >= this.container.offsetWidth) {
-      console.log("Reducing font size!");
+      debugTable.push({
+        message: "Reducing font size!",
+        function: "resizeToWidth"
+      });
       this.makeFontSizeSmaller(1);
       return;
     }
@@ -283,25 +377,37 @@ var Resizer = class {
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
     if (this.fontSize < this.minFontSize) {
-      console.log("Increasing font size because it is smaller than min font size!");
+      debugTable.push({
+        message: "Increasing font size because it is smaller than min font size!",
+        function: "resizeToHeight"
+      });
       this.makeFontSizeBigger(0);
       return;
     }
 
     if (this.fontSize > this.maxFontSize) {
-      console.log("Reducing font size because it is bigger than max font size!");
+      debugTable.push({
+        message: "Reducing font size because it is bigger than max font size!",
+        function: "resizeToHeight"
+      });
       this.makeFontSizeSmaller(0);
       return;
     }
 
     if (this.text.scrollHeight < this.container.offsetHeight) {
-      console.log("Increasing font size!");
+      debugTable.push({
+        message: "Increasing font size!",
+        function: "resizeToHeight"
+      });
       this.makeFontSizeBigger(0);
       return;
     }
 
     if (this.text.scrollHeight >= this.container.offsetHeight) {
-      console.log("Reducing font size!");
+      debugTable.push({
+        message: "Reducing font size!",
+        function: "resizeToHeight"
+      });
       this.makeFontSizeSmaller(0);
       return;
     }
@@ -318,25 +424,37 @@ var Resizer = class {
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
     if (this.fontSize < this.minFontSize) {
-      console.log("Increasing font size because it is smaller than min font size!");
+      debugTable.push({
+        message: "Increasing font size because it is smaller than min font size!",
+        function: "resizeToContainer"
+      });
       this.makeFontSizeBigger();
       return;
     }
 
     if (this.fontSize > this.maxFontSize) {
-      console.log("Reducing font size because it is bigger than max font size!");
+      debugTable.push({
+        message: "Reducing font size because it is bigger than max font size!",
+        function: "resizeToContainer"
+      });
       this.makeFontSizeSmaller();
       return;
     }
 
     if (this.text.scrollHeight < this.container.offsetHeight && this.text.scrollWidth < this.container.offsetWidth) {
-      console.log("Increasing font size!");
+      debugTable.push({
+        message: "Increasing font size!",
+        function: "resizeToContainer"
+      });
       this.makeFontSizeBigger();
       return;
     }
 
     if (this.text.scrollHeight >= this.container.offsetHeight && this.text.scrollWidth >= this.container.offsetWidth) {
-      console.log("Reducing font size!");
+      debugTable.push({
+        message: "Reducing font size!",
+        function: "resizeToContainer"
+      });
       this.makeFontSizeSmaller();
       return;
     }
@@ -353,7 +471,10 @@ var Resizer = class {
     */
   makeFontSizeBigger(mode = 2) {
     if (this.probs >= this.maxProbs) {
-      console.log("Reached max probation count!");
+      debugTable.push({
+        message: "Reached max probation count!",
+        function: "makeFontSizeBigger"
+      });
       return;
     }
 
@@ -361,13 +482,20 @@ var Resizer = class {
 
 
     if (parseFloat(this.fontSize) >= this.maxFontSize) {
-      console.log("Reached max font size", this.maxFontSize);
+      debugTable.push({
+        message: `Reached max font size ${this.maxFontSize}`,
+        function: "makeFontSizeBigger"
+      });
       return;
     }
 
     // no word wrap, check only width
     if (this.text.scrollWidth < this.container.offsetWidth && mode == 0) {
-      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
+      debugTable.push({
+        message: `Increasing font size because of width [fontSize|textWidth|containerWidth|mode]: ${this.fontSize} | ${this.text.scrollWidth} | ${this.container.offsetWidth} | ${mode}`,
+        function: "makeFontSizeBigger"
+      });
+      console.log();
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -375,7 +503,10 @@ var Resizer = class {
 
     // word wrap, check only height
     if (this.text.scrollHeight < this.container.offsetHeight && mode == 1) {
-      console.log("Increasing font size because of width:", this.fontSize, this.text.scrollHeight, this.container.offsetHeight, mode);
+      debugTable.push({
+        message: `Increasing font size because of height [fontSize|textHeight|containerHeight|mode]: ${this.fontSize} | ${this.text.scrollHeight} | ${this.container.offsetHeight} | ${mode}`,
+        function: "makeFontSizeBigger"
+      });
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -383,7 +514,10 @@ var Resizer = class {
 
     // check boundries of container, check width and height
     if (this.text.scrollWidth < this.container.offsetWidth && this.text.scrollHeight < this.container.offsetHeight && mode == 2) {
-      console.log("Increasing font size because of width and height:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, "|", this.text.scrollHeight, this.container.offsetHeight, mode);
+      debugTable.push({
+        message: `Increasing font size because of width and height [fontSize|textWidth|containerWidth|textHeight|containerHeight|mode]: ${this.fontSize} | ${this.text.scrollWidth} | ${this.container.offsetWidth} | ${this.text.scrollHeight} | ${this.container.offsetHeight} | ${mode}`,
+        function: "makeFontSizeBigger"
+      });
       this.increaseFontSize();
       this.makeFontSizeBigger(mode);
       return;
@@ -401,26 +535,38 @@ var Resizer = class {
     */
   makeFontSizeSmaller(mode = 2) {
     if (this.probs >= this.maxProbs) {
-      console.log("Reached max probation count!");
+      debugTable.push({
+        message: "Reached max probation count!",
+        function: "makeFontSizeSmaller"
+      });
       return;
     }
 
     this.fontSize = window.getComputedStyle(this.text).fontSize;
 
     if (parseFloat(this.fontSize) <= this.minFontSize) {
-      console.log("Reached min font size", this.minFontSize);
+      debugTable.push({
+        message: `Reached min font size ${this.maxFontSize}`,
+        function: "makeFontSizeSmaller"
+      });
       return;
     }
 
     if (this.text.scrollWidth >= this.container.offsetWidth && mode == 0) {
-      console.log("Decreasing font size because of width:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, mode);
+      debugTable.push({
+        message: `Decreasing font size because of width [fontSize|textWidth|containerWidth|mode]: ${this.fontSize} | ${this.text.scrollWidth} | ${this.container.offsetWidth} | ${mode}`,
+        function: "makeFontSizeSmaller"
+      });
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;
     }
 
     if (this.text.scrollHeight >= this.container.offsetHeight && mode == 1) {
-      console.log("Decreasing font size because of height:", this.fontSize, this.text.scrollHeight, this.container.offsetHeight, mode);
+      debugTable.push({
+        message: `Decreasing font size because of height [fontSize|textHeight|containerHeight|mode]: ${this.fontSize} | ${this.text.scrollHeight} | ${this.container.offsetHeight} | ${mode}`,
+        function: "makeFontSizeSmaller"
+      });
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;
@@ -428,7 +574,10 @@ var Resizer = class {
 
     // check boundries of container, check width and height
     if (this.text.scrollWidth >= this.container.offsetWidth || this.text.scrollHeight >= this.container.offsetHeight && mode == 2) {
-      console.log("Decreasing font size because of width and height:", this.fontSize, this.text.scrollWidth, this.container.offsetWidth, "|", this.text.scrollHeight, this.container.offsetHeight, mode);
+      debugTable.push({
+        message: `Decreasing font size because of width and height [fontSize|textWidth|containerWidth|textHeight|containerHeight|mode]: ${this.fontSize} | ${this.text.scrollWidth} | ${this.container.offsetWidth} | ${this.text.scrollHeight} | ${this.container.offsetHeight} | ${mode}`,
+        function: "makeFontSizeSmaller"
+      });
       this.decreaseFontSize();
       this.makeFontSizeSmaller(mode);
       return;

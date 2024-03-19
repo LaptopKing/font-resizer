@@ -16,7 +16,7 @@ resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: false, che
 resizer('.hl-container', {minFontSize: 12, maxFontSize: 96, wordWrap: true, checkWidth: true});
 
 // call resizer with all options and get container element by id
-resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, checkWidth: false, checkHeight: false, wordWrap: false, resizer: true, timeout: 150, resize: 1, maxProbs: 300});
+resizer('#hl-container', {minFontSize: 12, maxFontSize: 96, checkWidth: false, checkHeight: false, wordWrap: false, resizer: true, timeout: 150, resize: 1, maxProbs: 300, debug: true});
 ```
 
 ## Classes
@@ -132,7 +132,7 @@ or the height of the container depending on the word wrap
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| mode | <code>integer</code> | <code>2</code> | 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height) |
+| mode | <code>integer</code> | <code>2</code> | 0 = no word wrap (width), 1 = word wrap (height), 2 = check container boundries (width, height) |
 
 <a name="Resizer+makeFontSizeSmaller"></a>
 
@@ -145,7 +145,7 @@ or the height of the container depending on the word wrap
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| mode | <code>integer</code> | <code>2</code> | 0 = no word wrap (height), 1 = word wrap (width), 2 = check container boundries (width, height) |
+| mode | <code>integer</code> | <code>2</code> | 0 = no word wrap (width), 1 = word wrap (height), 2 = check container boundries (width, height) |
 
 <a name="resizer"></a>
 
@@ -158,5 +158,5 @@ to the size of the container
 | Param | Type | Description |
 | --- | --- | --- |
 | selector | <code>string</code> | Used to retrieve element from document |
-| options | <code>object</code> | {   {integer} minFontSize Minimum font size the text can have   {integer} maxFontSize Maximum font size the text can have   {boolean} wordWrap Should word wrap be used or not   {boolean} resizer Should the resizer run or just exit   {integer} timeout How much to delay before starting resizer   {integer} resize How many times should the resizer run   {integer} maxProbs The amount of times it can resize a text } Custom options of the resizer |
+| options | <code>object</code> | Custom options of the resizer |
 
