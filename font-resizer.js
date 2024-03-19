@@ -81,21 +81,23 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
           text.style['white-space'] = 'nowrap';
         }
 
+        // initialize resizer instance
+        var resizerInstance = new Resizer();
+        resizerInstance.container = container;
+        resizerInstance.text = text;
+        resizerInstance.minFontSize = minFontSize;
+        resizerInstance.maxFontSize = maxFontSize;
+        resizerInstance.wordWrap = wordWrap;
+        resizerInstance.checkWidth = checkWidth;
+        resizerInstance.checkHeight = checkHeight;
+        resizerInstance.maxProbs = maxProbs;
+
         for (var i = 0; i < resize; i++) {
 
           debugTable.push({
             message: "Running resizer",
             function: "resizer"
           });
-          var resizerInstance = new Resizer();
-          resizerInstance.container = container;
-          resizerInstance.text = text;
-          resizerInstance.minFontSize = minFontSize;
-          resizerInstance.maxFontSize = maxFontSize;
-          resizerInstance.wordWrap = wordWrap;
-          resizerInstance.checkWidth = checkWidth;
-          resizerInstance.checkHeight = checkHeight;
-          resizerInstance.maxProbs = maxProbs;
 
           resizerInstance.resizeToFit();
         }
@@ -104,20 +106,22 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         var text = container.firstElementChild;
         var fontSize = window.getComputedStyle(text).fontSize;
 
+        // finalizing the font size if text size reached the container's bounds
+        if (text.scrollHeight >= container.offsetHeight || text.scrollWidth >= container.offsetWidth) {
+          resizerInstance.fontSize = fontSize;
+          resizerInstance.decreaseFontSize();
+        }
+
         debugTable.push({
           message: `Final font size: ${fontSize}`,
           function: "resizer"
         });
         debugTable.push({
-          message: `After resize Container height: ${container.scrollHeight}`,
+          message: `After resize Container height: ${container.offsetHeight}`,
           function: "resizer"
         });
         debugTable.push({
-          message: `After resize Text height: ${text.offsetHeight}`,
-          function: "resizer"
-        });
-        debugTable.push({
-          message: `After resize Text height: ${text.offsetHeight}`,
+          message: `After resize Text height: ${text.scrollHeight}`,
           function: "resizer"
         });
         debugTable.push({
@@ -144,7 +148,7 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
         if (debug) {
           console.table(debugTable);
         }
-        
+
         debugTable = [];
       }, timeout);
     });
@@ -248,6 +252,7 @@ var Resizer = class {
     */
   increaseFontSize() {
     this.text.style.fontSize = parseFloat(this.fontSize) + 1 + "px";
+    this.fontSize = window.getComputedStyle(this.text).fontSize;
     this.probs++;
   }
 
@@ -258,6 +263,7 @@ var Resizer = class {
     */
   decreaseFontSize() {
     this.text.style.fontSize = parseFloat(this.fontSize) - 1 + "px";
+    this.fontSize = window.getComputedStyle(this.text).fontSize;
     this.probs++;
   }
 
