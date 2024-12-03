@@ -21,9 +21,8 @@ var debugTable = [];
   */
 
 function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = false, checkHeight = false, wordWrap = false, resizer = true, timeout = 100, resize = 1, maxProbs = 300, debug = false } = {}) {
-  try {
-
-    document.addEventListener("readystatechange", (event) => {
+  document.addEventListener("readystatechange", (event) => {
+    try {
 
       var container = document.querySelectorAll(selector)[0];
 
@@ -151,11 +150,10 @@ function resizer(selector, { minFontSize = 12, maxFontSize = 96, checkWidth = fa
 
         debugTable = [];
       }, timeout);
-    });
-
-  } catch (error) {
-    console.error("Error in font resizer:", error);
-  }
+    } catch (error) {
+      console.error("Error in font resizer:", error);
+    }
+  });
 }
 
 /**
