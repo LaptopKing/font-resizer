@@ -64,122 +64,126 @@ function runResizer(
         }
 
         setTimeout(function () {
-            if ((typeof resizer === 'boolean' ? resizer != true : resizer != 'true') || !resizer) {
-                return;
-            }
+            try {
+                if ((typeof resizer === 'boolean' ? resizer != true : resizer != 'true') || !resizer) {
+                    return;
+                }
 
-            var container = document.querySelectorAll(selector)[0];
-            var text = container.firstElementChild;
+                var container = document.querySelectorAll(selector)[0];
+                var text = container.firstElementChild;
 
-            if (!container || container.innerText == '' || !text || text.innerText == '') {
-                return;
-            }
+                if (!container || container.innerText == '' || !text || text.innerText == '') {
+                    return;
+                }
 
-            debugTable.push({
-                message: 'Start of script',
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: container,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: text,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `Before resize Container height: ${container.offsetHeight}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `Before resize Text height: ${text.scrollHeight}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `Before resize Container width: ${container.offsetWidth}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `Before resize Text width: ${text.scrollWidth}`,
-                function: 'resizer',
-            });
-
-            text.style = '';
-
-            if (wordWrap) {
-                text.style['word-wrap'] = 'normal';
-            } else {
-                text.style['white-space'] = 'nowrap';
-            }
-
-            // initialize resizer instance
-            var resizerInstance = new Resizer();
-            resizerInstance.container = container;
-            resizerInstance.text = text;
-            resizerInstance.minFontSize = minFontSize;
-            resizerInstance.maxFontSize = maxFontSize;
-            resizerInstance.wordWrap = wordWrap;
-            resizerInstance.checkWidth = checkWidth;
-            resizerInstance.checkHeight = checkHeight;
-            resizerInstance.maxProbs = maxProbs;
-
-            for (var i = 0; i < resize; i++) {
                 debugTable.push({
-                    message: 'Running resizer',
+                    message: 'Start of script',
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: container,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: text,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `Before resize Container height: ${container.offsetHeight}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `Before resize Text height: ${text.scrollHeight}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `Before resize Container width: ${container.offsetWidth}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `Before resize Text width: ${text.scrollWidth}`,
                     function: 'resizer',
                 });
 
-                resizerInstance.resizeToFit();
+                text.style = '';
+
+                if (wordWrap) {
+                    text.style['word-wrap'] = 'normal';
+                } else {
+                    text.style['white-space'] = 'nowrap';
+                }
+
+                // initialize resizer instance
+                var resizerInstance = new Resizer();
+                resizerInstance.container = container;
+                resizerInstance.text = text;
+                resizerInstance.minFontSize = minFontSize;
+                resizerInstance.maxFontSize = maxFontSize;
+                resizerInstance.wordWrap = wordWrap;
+                resizerInstance.checkWidth = checkWidth;
+                resizerInstance.checkHeight = checkHeight;
+                resizerInstance.maxProbs = maxProbs;
+
+                for (var i = 0; i < resize; i++) {
+                    debugTable.push({
+                        message: 'Running resizer',
+                        function: 'resizer',
+                    });
+
+                    resizerInstance.resizeToFit();
+                }
+
+                var container = document.querySelectorAll(selector)[0];
+                var text = container.firstElementChild;
+                var fontSize = window.getComputedStyle(text).fontSize;
+
+                // finalizing the font size if text size reached the container's bounds
+                if (text.scrollHeight >= container.offsetHeight || text.scrollWidth >= container.offsetWidth) {
+                    resizerInstance.fontSize = fontSize;
+                    resizerInstance.decreaseFontSize();
+                }
+
+                debugTable.push({
+                    message: `Final font size: ${fontSize}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `After resize Container height: ${container.offsetHeight}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `After resize Text height: ${text.scrollHeight}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `After resize Container width: ${container.offsetWidth}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: `After resize Text width: ${text.scrollWidth}`,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: container,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: text,
+                    function: 'resizer',
+                });
+                debugTable.push({
+                    message: 'End of script',
+                    function: 'resizer',
+                });
+
+                if (debug) {
+                    console.table(debugTable);
+                }
+
+                debugTable = [];
+            } catch (error) {
+                console.error('Error in font resizer set timeout:', error);
             }
-
-            var container = document.querySelectorAll(selector)[0];
-            var text = container.firstElementChild;
-            var fontSize = window.getComputedStyle(text).fontSize;
-
-            // finalizing the font size if text size reached the container's bounds
-            if (text.scrollHeight >= container.offsetHeight || text.scrollWidth >= container.offsetWidth) {
-                resizerInstance.fontSize = fontSize;
-                resizerInstance.decreaseFontSize();
-            }
-
-            debugTable.push({
-                message: `Final font size: ${fontSize}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `After resize Container height: ${container.offsetHeight}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `After resize Text height: ${text.scrollHeight}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `After resize Container width: ${container.offsetWidth}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: `After resize Text width: ${text.scrollWidth}`,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: container,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: text,
-                function: 'resizer',
-            });
-            debugTable.push({
-                message: 'End of script',
-                function: 'resizer',
-            });
-
-            if (debug) {
-                console.table(debugTable);
-            }
-
-            debugTable = [];
         }, timeout);
     } catch (error) {
         console.error('Error in font resizer:', error);
